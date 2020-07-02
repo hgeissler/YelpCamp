@@ -17,20 +17,6 @@ const campgroundSchema = new mongoose.Schema({
   image: String,
 })
 const Campground = mongoose.model('Campground', campgroundSchema)
-// Campground.create(
-//   {
-//     name: 'TestCamp',
-//     image:
-//       'https://api.creativecommons.engineering/v1/thumbs/51ea6857-e202-4e84-8623-1ee864bcab3c',
-//   },
-//   function (err, campground) {
-//     if (err) {
-//       console.log(err)
-//     } else {
-//       console.log(campground)
-//     }
-//   }
-// )
 
 // routes
 app.get('/', function (req, res) {
@@ -50,8 +36,15 @@ app.get('/campgrounds', function (req, res) {
 app.post('/campgrounds', function (req, res) {
   const name = req.body.name
   const image = req.body.image
-  campgrounds.push({ name: name, image: image })
-  res.redirect('/campgrounds')
+  const newCampground = { name: req.body.name, image: req.body.image }
+
+  Campground.create(newCampground, function (err, newlyCreated) {
+    if (err) {
+      console.log(err)
+    } else {
+      res.redirect('/campgrounds')
+    }
+  })
 })
 
 app.get('/campgrounds/new', function (req, res) {
