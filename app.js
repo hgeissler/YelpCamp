@@ -6,6 +6,8 @@ const mongoose = require('mongoose')
 let app = express()
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({ extended: true }))
+// bootstrap
+app.use(express.static('public'))
 
 // mongoose
 mongoose.connect('mongodb://localhost/yelp_camp', {
@@ -36,7 +38,7 @@ app.get('/campgrounds', function (req, res) {
 app.post('/campgrounds', function (req, res) {
   const name = req.body.name
   const image = req.body.image
-  const newCampground = { name: req.body.name, image: req.body.image }
+  const newCampground = { name: name, image: image.image }
 
   Campground.create(newCampground, function (err, newlyCreated) {
     if (err) {
