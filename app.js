@@ -17,30 +17,35 @@ mongoose.connect('mongodb://localhost/yelp_camp', {
 const campgroundSchema = new mongoose.Schema({
   name: String,
   image: String,
+  description: String,
 })
 const Campground = mongoose.model('Campground', campgroundSchema)
 
 // routes
+
 app.get('/', function (req, res) {
   res.render('landing')
 })
 
+// INDEX
 app.get('/campgrounds', function (req, res) {
   Campground.find({}, function (err, campgrounds) {
     if (err) {
       console.log(err)
     } else {
-      res.render('campgrounds', { campgrounds: campgrounds })
+      res.render('index', { campgrounds: campgrounds })
     }
   })
 })
 
+// CREATE
 app.post('/campgrounds', function (req, res) {
   const name = req.body.name
   const image = req.body.image
-  const newCampground = { name: name, image: image.image }
+  const description = req.body.description
+  const newCampground = { name: name, image: image, description: description }
 
-  Campground.create(newCampground, function (err, newlyCreated) {
+  Campground.create(newCampground, function (err) {
     if (err) {
       console.log(err)
     } else {
@@ -49,8 +54,20 @@ app.post('/campgrounds', function (req, res) {
   })
 })
 
+// NEW
 app.get('/campgrounds/new', function (req, res) {
   res.render('new')
+})
+
+// SHOW
+app.get('/campgrounds/:id', function (req, res) {
+  Campground.findById(req.params.id, function (err, foundCampground) {
+    if (err) {
+      console.log(err)
+    } else {
+      res.render('show', { campground: foundCampground })
+    }
+  })
 })
 
 // listen
